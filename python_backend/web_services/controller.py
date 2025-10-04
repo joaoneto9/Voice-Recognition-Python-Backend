@@ -1,0 +1,29 @@
+from aifc import Error
+from flask import Flask, request, jsonify
+import io
+from ..audio_utils.audio_transcribe import audio_transcription
+
+app = Flask(__name__)
+
+@app.route("/transcribe", methods=["GET"])
+def get_req():
+    return "opa"
+
+@app.route("/transcribe", methods=["POST"])
+def transact_and_transcribe_audio():
+    
+    if "audio" not in request.files:
+        return jsonify({"erro": "Nenhum arquivo de áudio foi enviado"}), 400
+    
+    audio = request.files["audio"]
+
+    if audio.filename == "":
+        return jsonify({"erro": "Nome de arquivo inválido"}), 400
+
+    audio_bytes = io.BytesIO(audio.read())
+
+    try:
+        audio_transcription_text = audio_transcription(audio_bytes)
+        return jsonify({"text": audio_transcription_text})
+    except Error as e:
+        return jsonify({"erro": f"Erro: {e}"}), 400

@@ -1,7 +1,7 @@
 from aifc import Error
 from flask import Flask, request, jsonify
 import io
-from ..audio_utils.audio_transcribe import audio_transcription
+from audio_utils.audio_transcribe import audio_transcription
 
 app = Flask(__name__)
 
@@ -27,3 +27,6 @@ def transact_and_transcribe_audio():
         return jsonify({"text": audio_transcription_text})
     except Error as e:
         return jsonify({"erro": f"Erro: {e}"}), 400
+
+def run_app():
+    app.run(debug=True)

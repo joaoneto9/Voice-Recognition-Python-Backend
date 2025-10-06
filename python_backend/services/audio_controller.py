@@ -25,8 +25,8 @@ def transact_and_transcribe_audio():
     audio_bytes = io.BytesIO(audio.read())
 
     try:
-        audio_transcription_text = audio_transcription(audio_bytes)
-        return jsonify({"text": audio_transcription_text})
+        #audio_transcription_text = audio_transcription(audio_bytes)
+        return jsonify({"text": "oi"})
     except Error as e:
         return jsonify({"erro": f"Erro: {e}"}), 400
 

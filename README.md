@@ -5,6 +5,7 @@
  - [Atualizando dependências do projeto](#atualizando-dependências-do-projeto)
  - [Criando e ativando ambiente virtual](#criando-e-ativando-ambiente-virtual)
  - [Atualizando dependências](#atualizando-dependências)
+ - [Documentação da _API_](#documentação-da-api)
 
 ## Instalando dependências
 
@@ -96,9 +97,60 @@ Para atualizar as dependências do projeto, simplesmente execute:
 ```bash
 pip install -r requirements.txt
 ```
+**Importante:** a biblioteca `pydub` requer a presença de outra biblioteca, `ffmpeg`, em seu sistema. Você pode instalá-la com:
+
+_Linux_:
+```bash
+sudo apt install ffmpeg -y
+```
 
 Caso precise instalar alguma outra dependência além das de _requirements.txt_, adicione àquelas já usadas no projeto com:
 
 ```
 pip freeze > requirements.txt
+```
+## Documentação da _API_
+
+A nossa _API_ é bastante simples, contendo apenas um _endpoint_ principal - `transcribe` -, que recebe requisições _POST_ e é responsável por converter o áudio recebido no _body_.
+
+### IP e porta
+
+O nosso servidor roda em _localhost_, na porta **5000**.
+
+### Estrutura do _body_
+
+O _body_, considerando o formato **JSON** deve possuir apenas um campo principal: `audio`. Essa é a chave. O valor desse campo deve ser representado pelos _Blobs_ de áudios obtidos durante a captação. Portanto, sua requisição, em _JavaScript_, seria algo como:
+
+```javascript
+const formData = new FormData();
+
+formData.append('audio', blob, 'gravacao.webm') {/* aqui, ligamos o campo 'audio' ao seu valor, que são os blobs, que recebem o nome de 'gravacao.webm' */}
+
+const response = await fetch('http://localhost:5000/transcribe', {
+    method: 'POST',
+    body: formData
+});
+
+if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(errorText);
+}
+```
+
+É válido pontuar que tanto o navegador quanto qualquer outro software de teste de _APIs_, como o _Insomnia_, corrijem o _Content Type_ do body ao adicionar o arquivo a ele.
+
+### "Rodando" servidor
+
+Você pode _startar_ o servidor entrando no diretório `python_backend_ e executando:
+
+_Linux/MacOS_:
+
+```bash
+python3 application.py
+```
+
+_Windows_:
+
+```powershell
+python application.py
 ```

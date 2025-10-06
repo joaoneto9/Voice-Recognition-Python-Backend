@@ -3,6 +3,9 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import io
 from audio_utils.audio_transcribe import audio_transcription
+from pydub import AudioSegment
+import tempfile
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -22,11 +25,27 @@ def transact_and_transcribe_audio():
     if audio.filename == "":
         return jsonify({"erro": "Nome de arquivo inválido"}), 400
 
-    audio_bytes = io.BytesIO(audio.read())
+    webm_audio_bytes = io.BytesIO(audio.read())
 
     try:
-        #audio_transcription_text = audio_transcription(audio_bytes)
-        return jsonify({"text": "oi"})
+
+        audio_segment = AudioSegment.from_file(webm_audio_bytes, format="webm")
+
+        wav_audio_bytes = io.BytesIO()
+
+        audio_segment.export(wav_audio_bytes, format="wav")
+
+        wav_audio_bytes.seek(0)
+
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_wav_file:
+            temp_wav_file.write(wav_audio_bytes.read())
+            temp_wav_file_path = temp_wav_file.name
+
+        audio_transcription_text = audio_transcription(temp_wav_file_path)
+
+        os.remove(temp_wav_file_path)
+
+        return jsonify({"text": audio_transcription_text})
     except Error as e:
         return jsonify({"erro": f"Erro: {e}"}), 400
 

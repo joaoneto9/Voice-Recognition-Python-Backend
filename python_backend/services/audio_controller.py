@@ -5,7 +5,7 @@ import io
 from audio_utils.audio_transcribe import audio_transcription
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:5173"])
+CORS(app)
 
 @app.route("/transcribe", methods=["GET"])
 def get_req():

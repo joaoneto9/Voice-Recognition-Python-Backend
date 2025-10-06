@@ -46,7 +46,8 @@ def transact_and_transcribe_audio():
         os.remove(temp_wav_file_path)
 
         return jsonify({"text": audio_transcription_text})
-    except Error as e:
+    except Exception as e:
+        print(f"LOG: ERRO DURANTE O PROCESSAMENTO: {e}")
         return jsonify({"erro": f"Erro: {e}"}), 400
 
 def run_app():

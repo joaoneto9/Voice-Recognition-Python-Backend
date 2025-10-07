@@ -1,4 +1,4 @@
-import services.audio_controller
+import controllers.audio_controller
 
 if __name__ == '__main__':
-    services.audio_controller.run_app()
+    controllers.audio_controller.run_app()

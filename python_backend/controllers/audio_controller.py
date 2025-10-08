@@ -23,7 +23,7 @@ def get_audio_transcribed():
         return jsonify({"Error": "No audio file detected!"}), 400
 
     # acessando arquivo de áudio
-    audio_file = request.files[KEY_REQUEST_FIELD] 
+    audio_file = request.files[KEY_REQUEST_FIELD]
 
     # verificando se o arquivo de áudio possui um nome válido
     if audio_file.name == "": 

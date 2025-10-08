@@ -65,15 +65,15 @@ class AudioOperations():
             audio_transcription: Transcrição do arquivo de áudio em texto.
         """
 
-        model = whisper.load_model(self.transcription_model)
+        model = whisper.load_model(self.transcription_model) # modelo da LLM é carregado.
 
         result = model.transcribe(
-            audio_file_path,
-            language = self.language,
-            fp16=False
+            audio_file_path, # arquivo a ser transcrito em texto
+            language = self.language, # idioma do áudio
+            fp16=False # formato de representação númerica dos dados de áudio
         )
 
-        os.remove(audio_file_path)
+        os.remove(audio_file_path) # removendo arquivo temporário
 
         audio_transcription = result["text"]
 

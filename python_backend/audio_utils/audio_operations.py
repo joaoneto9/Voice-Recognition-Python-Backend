@@ -1,5 +1,5 @@
+import whisper
 import os
-import speech_recognition as sr
 import io
 import tempfile
 from pydub import AudioSegment
@@ -7,7 +7,8 @@ from pydub import AudioSegment
 class AudioOperations():
 
     def __init__(self):
-        return
+        self.transcription_model = "small"
+        self.language = "portuguese"
 
     def get_file_bytes(self, audio_file):
         return io.BytesIO(audio_file.read())
@@ -30,13 +31,14 @@ class AudioOperations():
 
     def transcribe_audio(self, audio_file_path):
 
-        r = sr.Recognizer()
+        model = whisper.load_model(self.transcription_model)
 
-        with sr.AudioFile(audio_file_path) as source:
-            generated_audio = r.record(source)
-
-        text = r.recognize_google(generated_audio, language="pt-BR")
+        result = model.transcribe(
+            audio_file_path,
+            language = self.language,
+            fp16=False
+        )
 
         os.remove(audio_file_path)
 
-        return text
+        return result["text"]

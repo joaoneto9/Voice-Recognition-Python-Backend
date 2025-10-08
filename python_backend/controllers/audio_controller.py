@@ -1,38 +1,49 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-from audio_utils.audio_operations import AudioOperations
+from flask import Flask, request, jsonify 
+from flask_cors import CORS 
+from audio_utils.audio_operations import AudioOperations 
 
-HOST = '0.0.0.0'
-PORT = 5000
-KEY_REQUEST_FIELD = "audio"
+# ao definir HOST como 0.0.0.0, qualquer dispositivo que possa se conectar ao servidor (ip público ou não) pode usar esse serviço
+HOST = '0.0.0.0' 
+# definindo a porta 5000 como padrão da aplicação do lado do servidor
+PORT = 5000 
+# nome do campo que deve conter o arquivo de áudio
+KEY_REQUEST_FIELD = "audio" 
 
-app = Flask(__name__)
-CORS(app)
+# instanciando um objeto da classe Flask: o app
+app = Flask(__name__) 
+# liberando quaisquer acessos externos a essa aplicação (ambiente de desenvolvimento)
+CORS(app) 
 
-@app.route("/transcribe", methods=["POST"])
+# criando endpoint para requisições POST
+@app.route("/transcribe", methods=["POST"]) 
 def get_audio_transcribed():
 
-    if KEY_REQUEST_FIELD not in request.files:
+    # verificando se o campo 'audio' existe
+    if KEY_REQUEST_FIELD not in request.files: 
         return jsonify({"Error": "No audio file detected!"}), 400
 
-    audio_file = request.files[KEY_REQUEST_FIELD]
+    # acessando arquivo de áudio
+    audio_file = request.files[KEY_REQUEST_FIELD] 
 
-    if audio_file.name == "":
+    # verificando se o arquivo de áudio possui um nome válido
+    if audio_file.name == "": 
         return jsonify({"Error": "Invalid name for audio file!"}), 400
 
     try:
 
-        audio_op = AudioOperations()
+        audio_op = AudioOperations() # criando um instância da classe de operações de áudio
 
-        wav_audio_file_path = audio_op.convert_to_wav(audio_op.get_file_bytes(audio_file))
+        webm_audio_bytes = audio_op.get_file_bytes(audio_file) # obtendo bytes do arquivo de áudio .webm (oriundo da requisição HTTP)
 
-        final_transcription = audio_op.transcribe_audio(wav_audio_file_path)
+        wav_audio_file_path = audio_op.convert_to_wav(webm_audio_bytes) # gerando arquivo .wav a partir dos bytes do arquivo .webm
 
-        return jsonify({"text": final_transcription}), 200
+        final_transcription = audio_op.transcribe_audio(wav_audio_file_path) # gerando transcrição do áudio em texto
 
-    except Exception as e:
+        return jsonify({"text": final_transcription}), 200 # retornando o texto no formato JSON
+
+    except Exception as e: # captura erros no processo
         print(f"LOG: ERROR WHILE PROCESSING: {e}")
         return jsonify({"Error": {e}}), 400
 
 def run_app():
-    app.run(host=HOST, port=PORT)
+    app.run(host=HOST, port=PORT) # roda a aplicação, especificando HOST e porta

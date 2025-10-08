@@ -9,10 +9,6 @@ KEY_REQUEST_FIELD = "audio"
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/transcribe", methods=["GET"])
-def get_req():
-    return "opa"
-
 @app.route("/transcribe", methods=["POST"])
 def get_audio_transcribed():
 

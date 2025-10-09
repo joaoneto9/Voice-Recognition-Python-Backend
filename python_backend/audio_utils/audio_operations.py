@@ -16,6 +16,7 @@ class AudioOperations():
     def __init__(self) -> None:
         self.transcription_model = "small"
         self.language = "portuguese"
+        self.model =  whisper.load_model(self.transcription_model) # modelo da LLM é carregado.
 
     def get_file_bytes(self, audio_file: FileStorage) -> io.BytesIO:
         """Retorna os bytes de um arquivo. Nesse caso, um arquivo de áudio.
@@ -64,10 +65,8 @@ class AudioOperations():
         Returns:
             audio_transcription: Transcrição do arquivo de áudio em texto.
         """
-
-        model = whisper.load_model(self.transcription_model) # modelo da LLM é carregado.
-
-        result = model.transcribe(
+        
+        result = self.model.transcribe(
             audio_file_path, # arquivo a ser transcrito em texto
             language = self.language, # idioma do áudio
             fp16=False # formato de representação númerica dos dados de áudio

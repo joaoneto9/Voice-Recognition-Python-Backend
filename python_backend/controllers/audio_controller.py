@@ -9,6 +9,10 @@ PORT = 5000
 # nome do campo que deve conter o arquivo de áudio
 KEY_REQUEST_FIELD = "audio" 
 
+# criando um instância da classe de operações de áudio (start cold do modelo Whisper)
+# não pode instanciar a cada requisição, pois é lenta a função .load_model()
+audio_op = AudioOperations()
+ 
 # instanciando um objeto da classe Flask: o app
 app = Flask(__name__) 
 # liberando quaisquer acessos externos a essa aplicação (ambiente de desenvolvimento)
@@ -30,9 +34,6 @@ def get_audio_transcribed():
         return jsonify({"Error": "Invalid name for audio file!"}), 400
 
     try:
-
-        audio_op = AudioOperations() # criando um instância da classe de operações de áudio
-
         webm_audio_bytes = audio_op.get_file_bytes(audio_file) # obtendo bytes do arquivo de áudio .webm (oriundo da requisição HTTP)
 
         wav_audio_file_path = audio_op.convert_to_wav(webm_audio_bytes) # gerando arquivo .wav a partir dos bytes do arquivo .webm

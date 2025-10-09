@@ -73,7 +73,7 @@ O arquivo `requirements.txt` permite concentrar todas as dependências utilizada
 
 #### Criando e ativando ambiente virtual
 
-Crie o ambiente virtual `venv` com:
+Crie o ambiente virtual `venv` (caso ainda não exista) com:
 
 ```bash
 python3 -m venv venv
@@ -109,6 +109,14 @@ Caso precise instalar alguma outra dependência além das de _requirements.txt_,
 ```
 pip freeze > requirements.txt
 ```
+## Transcrição do áudio
+
+Em nossa _API_, a transcrição do áudio em texto é feita utilizando a _LLM_ de código aberto [**whisper**](https://github.com/openai/whisper), que possui uma biblioteca em _Python_ com o mesmo nome. Além disso, utilizamos ferramentas auxiliares para conversão de formatos de arquivo de áudio ([**pydub**](https://github.com/jiaaro/pydub)) e para criação de arquivos temporários em disco ([**tempfile**](https://docs.python.org/3/library/tempfile.html)).
+
+### Manipulando rotas, endpoints e servidor
+
+Para realizar a manipulação de rotas e _endpoints_ da aplicação, além de gerenciar as principais configurações do servidor - como **Porta**, **Hostname** e **CORS** - utilizamos [**Flask**](https://flask.palletsprojects.com/en/stable/), um framework leve e completo, construído em Python, que permite configurar o _backend_
+
 ## Documentação da _API_
 
 A nossa _API_ é bastante simples, contendo apenas um _endpoint_ principal - `transcribe` -, que recebe requisições _POST_ e é responsável por converter o áudio recebido no _body_.
@@ -154,3 +162,9 @@ _Windows_:
 ```powershell
 python application.py
 ```
+
+## Colaboradores
+
+ - [guinoronhaf](https://github.com/guinoronhaf)
+ - [joaoneto9](https://github.com/joaoneto9)
+ - [rebecasouzag](https://github.com/joaoneto9)
